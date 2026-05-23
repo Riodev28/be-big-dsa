@@ -1,7 +1,8 @@
 import redis
 from ...core.config import settings
 
-class Cache():
+
+class Cache:
     """Adapter over Cache system that exposes a minimal get/set interface.
 
     Decouples the rest of the codebase from cache database directly,

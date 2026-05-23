@@ -3,13 +3,14 @@ from ...shared.ast.value_objects import NormalizedCode
 from ...shared.ast.visitors import LoopVisitors, RecursionVisitors
 from ..reports import TemporalAnalysisReport
 
+
 class TemporalComplexityAnalyzer:
     def __init__(self, code: NormalizedCode):
         self.code = code
 
     def analyze(self):
-        """ Analyze big o notation complexity using the tree node and visitors """
-        
+        """Analyze big o notation complexity using the tree node and visitors"""
+
         tree = Parser.to_tree_node(self.code)
 
         loop_visitor = LoopVisitors()
@@ -20,14 +21,12 @@ class TemporalComplexityAnalyzer:
 
         return self._build_result(
             loop_depth=loop_visitor.max_depth,
-            recursive_functions=recursion_visitor.recursive_functions
+            recursive_functions=recursion_visitor.recursive_functions,
         )
 
     def _build_result(
-        self,
-        loop_depth: int,
-        recursive_functions: set[str]
-    )-> TemporalAnalysisReport:
+        self, loop_depth: int, recursive_functions: set[str]
+    ) -> TemporalAnalysisReport:
 
         complexity = self._infer_complexity(loop_depth)
 
@@ -39,7 +38,7 @@ class TemporalComplexityAnalyzer:
 
     @staticmethod
     def _infer_complexity(loop_depth: int) -> str:
-        """ Complexity map for count depth loops """
+        """Complexity map for count depth loops"""
         loop_mapping = {
             0: "O(1)",
             1: "O(n)",

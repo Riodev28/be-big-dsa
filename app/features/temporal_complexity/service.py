@@ -7,18 +7,19 @@ from ...shared.ast.value_objects.normalized_code import NormalizedCode
 from ...shared.cache.mixin import CacheMixin
 from ..reports import TemporalAnalysisReport
 
+
 class TemporalComplexityService(CacheMixin):
     def __init__(self, cache_service: CacheService):
         self.cache_service = cache_service
 
     def analyze(self, payload: TemporalComplexityRequest):
-        """ Orchestrate payload. Analyze time complexity result """
+        """Orchestrate payload. Analyze time complexity result"""
 
         normalized_code = NormalizedCode(payload.code)
         fingerprint = Fingerprint(normalized_code)
 
         key, cached = self.process_cache("temporal_complexity", fingerprint)
-        
+
         if cached:
             return TemporalComplexityResponseDTO(
                 analysis=TemporalAnalysisReport(**cached)
