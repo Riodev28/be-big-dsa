@@ -1,6 +1,6 @@
-from app.core.config import Settings
+from app.core.config import Settings as Settings
 from app.core.exceptions import (
-    ParseTreeError,
-    NormalizeCodeError,
-    CodeNotNormalizedError,
+    ParseTreeError as ParseTreeError,
+    NormalizeCodeError as NormalizeCodeError,
+    CodeNotNormalizedError as CodeNotNormalizedError,
 )
