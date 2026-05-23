@@ -1,0 +1,1 @@
+from app.features.reports.temporal_analysis_report import TemporalAnalysisReport
