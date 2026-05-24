@@ -39,4 +39,7 @@ class CacheService:
         if is_dataclass(value):
             return asdict(value)
 
-        return value
+        if isinstance(value, dict) or isinstance(value, str):
+            return value
+
+        raise TypeError(f"{type(value).__name__} is not JSON serializable")

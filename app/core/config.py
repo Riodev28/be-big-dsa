@@ -2,8 +2,8 @@ from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
-    redis_url: str
-    groq_api_key: str
+    cache_url: str
+    ai_api_key: str
 
     class Config:
         env_file = ".env"

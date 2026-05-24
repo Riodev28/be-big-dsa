@@ -10,7 +10,7 @@ class Cache:
     """
 
     def __init__(self):
-        self.cache = redis.Redis.from_url(settings.redis_url, decode_responses=True)
+        self.cache = redis.Redis.from_url(settings.cache_url, decode_responses=True)
 
     def get(self, key: str):
         return self.cache.get(name=key)
