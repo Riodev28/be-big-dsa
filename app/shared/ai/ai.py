@@ -1,7 +1,6 @@
 from groq import Groq
 from groq.types.chat import ChatCompletion
 from ...core.config import settings
-from typing import Any
 
 
 class AI:
@@ -18,6 +17,6 @@ class AI:
             messages=[{"role": "user", "content": prompt}],
             max_tokens=300,
         )
-        
+
     def first_content(self, response: ChatCompletion):
         return response.choices[0].message.content

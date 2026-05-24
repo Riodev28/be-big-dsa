@@ -15,12 +15,14 @@ from ..reports import (
     TemporalAIReport,
 )
 
+
 class TemporalComplexityService(CacheMixin):
     def __init__(self, cache_client: CacheService, ai_service: AIService):
         self.cache_service = cache_client
         self.ai_service = ai_service
 
     async def analyze(self, payload: TemporalComplexityRequest):
+        """Orchestrate payload. Analyze time complexity result"""
         normalized_code = NormalizedCode(payload.code)
 
         fingerprint = Fingerprint(normalized_code)
@@ -43,13 +45,13 @@ class TemporalComplexityService(CacheMixin):
                 "temporal_complexity_ai", fingerprint
             )
 
-            ai_report = await self.handle_ai_process(
+            ai_report = await self._handle_ai(
                 key=ai_key, cached=cached_ai, report=report
             )
 
         return TemporalComplexityResponseDTO(analysis=report, ai=ai_report)
 
-    async def handle_ai_process(
+    async def _handle_ai(
         self, key: str, cached: dict[str, Any] | None, report: TemporalAnalysisReport
     ) -> TemporalAIReport | None:
         if cached:

@@ -1,6 +1,4 @@
-from .client import create_ai_client
 from .ai import AI
-from ...features.reports import TemporalAnalysisReport
 
 
 class AIService:
@@ -32,6 +30,8 @@ class AIService:
             - Target audience: mid-level developer
         """
 
-        response = await self.client.create_response(model="llama-3.3-70b-versatile", prompt=prompt)
+        response = await self.client.create_response(
+            model="llama-3.3-70b-versatile", prompt=prompt
+        )
 
         return self.client.first_content(response)

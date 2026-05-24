@@ -1,2 +1,2 @@
-from app.features.reports.temporal_analysis_report import TemporalAnalysisReport
+from .temporal_analysis_report import TemporalAnalysisReport as TemporalAnalysisReport
 from .temporal_ai_report import TemporalAIReport as TemporalAIReport

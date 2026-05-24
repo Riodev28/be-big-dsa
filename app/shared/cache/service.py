@@ -41,7 +41,5 @@ class CacheService:
 
         if isinstance(value, dict) or isinstance(value, str):
             return value
-        
-        raise TypeError(
-            f"{type(value).__name__} is not JSON serializable"
-        )
+
+        raise TypeError(f"{type(value).__name__} is not JSON serializable")

@@ -1,1 +1,1 @@
-from app.shared.ast.value_objects.normalized_code import NormalizedCode
+from .normalized_code import NormalizedCode as NormalizedCode
