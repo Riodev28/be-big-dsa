@@ -4,3 +4,4 @@ from app.core.exceptions import (
     NormalizeCodeError as NormalizeCodeError,
     CodeNotNormalizedError as CodeNotNormalizedError,
 )
+from .middleware import setup_middlewares as setup_middlewares
