@@ -5,6 +5,7 @@ app = FastAPI(title="BigDSA", version="1.0.0")
 
 app.include_router(temporal_router, prefix="/analyze")
 
+
 @app.get("/health")
 def health():
     return {"status": "ok"}

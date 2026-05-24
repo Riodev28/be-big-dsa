@@ -1,7 +1,8 @@
 import redis
 from ...core.config import settings
 
-class Cache():
+
+class Cache:
     """Adapter over Cache system that exposes a minimal get/set interface.
 
     Decouples the rest of the codebase from cache database directly,
@@ -9,7 +10,7 @@ class Cache():
     """
 
     def __init__(self):
-        self.cache = redis.Redis.from_url(settings.redis_url, decode_responses=True)
+        self.cache = redis.Redis.from_url(settings.cache_url, decode_responses=True)
 
     def get(self, key: str):
         return self.cache.get(name=key)

@@ -1,30 +1,68 @@
+from typing import Any
+
 from ...shared.ast.fingerprint import Fingerprint
+from ...shared.ast.value_objects.normalized_code import NormalizedCode
+from ...shared.cache.mixin import CacheMixin
 from ...shared.cache.service import CacheService
+from ...shared.ai.service import AIService
+
 from .analyzer import TemporalComplexityAnalyzer
 from .request import TemporalComplexityRequest
 from .dto import TemporalComplexityResponseDTO
-from ...shared.ast.value_objects.normalized_code import NormalizedCode
-from ...shared.cache.mixin import CacheMixin
-from ..reports import TemporalAnalysisReport
+
+from ..reports import (
+    TemporalAnalysisReport,
+    TemporalAIReport,
+)
 
 class TemporalComplexityService(CacheMixin):
-    def __init__(self, cache_service: CacheService):
-        self.cache_service = cache_service
+    def __init__(self, cache_client: CacheService, ai_service: AIService):
+        self.cache_service = cache_client
+        self.ai_service = ai_service
 
-    def analyze(self, payload: TemporalComplexityRequest):
-        """ Orchestrate payload. Analyze time complexity result """
-
+    async def analyze(self, payload: TemporalComplexityRequest):
         normalized_code = NormalizedCode(payload.code)
+
         fingerprint = Fingerprint(normalized_code)
 
-        key, cached = self.process_cache("temporal_complexity", fingerprint)
-        
-        if cached:
-            return TemporalComplexityResponseDTO(
-                analysis=TemporalAnalysisReport(**cached)
+        analysis_key, cached_analysis = self.process_cache(
+            "temporal_complexity", fingerprint
+        )
+
+        if cached_analysis:
+            report = TemporalAnalysisReport(**cached_analysis)
+
+        else:
+            report = TemporalComplexityAnalyzer(normalized_code).analyze()
+            self.cache_service.set_cache(analysis_key, report)
+
+        ai_report = None
+
+        if payload.explain_ai:
+            ai_key, cached_ai = self.process_cache(
+                "temporal_complexity_ai", fingerprint
             )
 
-        result = TemporalComplexityAnalyzer(normalized_code).analyze()
-        self.cache_service.set_cache(key, result)
+            ai_report = await self.handle_ai_process(
+                key=ai_key, cached=cached_ai, report=report
+            )
 
-        return TemporalComplexityResponseDTO(analysis=result)
+        return TemporalComplexityResponseDTO(analysis=report, ai=ai_report)
+
+    async def handle_ai_process(
+        self, key: str, cached: dict[str, Any] | None, report: TemporalAnalysisReport
+    ) -> TemporalAIReport | None:
+        if cached:
+            return TemporalAIReport(**cached)
+
+        explanation = await self.ai_service.explain_temporal_complexity(
+            time_complexity=report.time_complexity,
+            max_loop_depth=report.max_loop_depth,
+            recursive=report.recursive,
+        )
+
+        ai_report = TemporalAIReport(temporal_explanation=explanation)
+
+        self.cache_service.set_cache(key, ai_report, ex_ttl=86400)
+
+        return ai_report
