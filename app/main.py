@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from .features.temporal_complexity.router import router as temporal_router
+from .features.spatial_complexity.router import router as spatial_router
 from .core import setup_middlewares
 
 app = FastAPI(title="BigDSA", version="1.0.0")
@@ -10,6 +11,8 @@ ANALYZE_PREFIX = "/analyze"
 setup_middlewares(app)
 
 app.include_router(temporal_router, prefix=f"{API_PREFIX}{ANALYZE_PREFIX}")
+app.include_router(spatial_router, prefix=f"{API_PREFIX}{ANALYZE_PREFIX}")
+
 
 @app.get("/health")
 def health():
